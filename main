@@ -1,0 +1,90 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+ 
+using namespace std;
+ 
+void prime_filter(vector <bool> &filter, int N)
+{
+    // mark address 0 and 1 ans false
+    // as these are not primes
+    filter[0] = filter[1] = false;
+ 
+    // mark all the even numbers as false
+    for(int i = 4; i < N; i += 2)
+        filter[i] = false;
+ 
+    // now mark the multiples of all
+    // the odd numbers as false
+    for(int i = 3; i < N; i += 2)
+        for(int j = i * i; j < N; j += i)
+            filter[j] = false;
+}
+ 
+void prime_storage(vector <int> &primes, vector <bool> filter)
+{
+    primes.push_back(2);
+    for(int i = 3; i < filter.size(); i += 2)
+        if(filter[i])
+            primes.push_back(i);
+ 
+    return;
+}
+ 
+void print_factors(vector <int> factors)
+{
+    cout << "The prime factors of the number are:" << endl;
+    for(int ele : factors)
+        cout << ele << " ";
+    cout << endl;
+}
+ 
+void find_prime_factors(vector <int> primes, int N)
+{
+    // initailize the vector
+    vector <int> factors;
+ 
+    int N_new = N;
+    int i = 0;
+    int p = primes[0];
+     
+    // start the loop
+    while(p * p <= N_new)
+    {
+        if(N % p == 0)
+        {
+            factors.push_back(p);
+ 
+            while(N % p == 0)
+                N /= p;
+        }
+ 
+        i++;
+        p = primes[i];
+    }
+ 
+    // if the number is not 1, then the
+    // number itself is a prime number
+    if(N != 1)
+        factors.push_back(N);
+ 
+    print_factors(factors);
+}
+ 
+int main()
+{
+    int M = 1000;
+    vector <bool> filter(M, true);
+    prime_filter(filter, M);
+ 
+    vector <int> primes;
+    prime_storage(primes, filter);
+ 
+    cout << "Enter the number" << endl;
+    int N;
+    cin >> N;
+ 
+    find_prime_factors(primes, N);
+ 
+    return 0;
+}
